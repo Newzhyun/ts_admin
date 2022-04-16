@@ -24,6 +24,10 @@
       <input type="checkbox" />
       <span>记住账号</span>
     </div>
+    <div class="code">
+      <span v-if="codeinfo.showcode" @click.once="changemsg">验证码</span>
+      <span v-else>{{ codeinfo.messageTime }}</span>
+    </div>
   </div>
 </template>
 
@@ -60,6 +64,15 @@ export default defineComponent({
         }
       ]
     });
+    const codeinfo = reactive<{
+      showcode: boolean;
+      messageTime: number;
+      timer: any;
+    }>({
+      showcode: true,
+      messageTime: 60,
+      timer: null
+    });
     const submitForm = (formEl: FormInstance | undefined) => {
       if (!formEl) return;
       formEl.validate((valid) => {
@@ -71,11 +84,24 @@ export default defineComponent({
         }
       });
     };
+    function changemsg(): void {
+      codeinfo.showcode = false;
+      codeinfo.timer = setInterval(() => {
+        codeinfo.messageTime -= 1;
+        if (codeinfo.messageTime <= 0) {
+          clearInterval(codeinfo.timer);
+          codeinfo.messageTime = 60;
+          codeinfo.showcode = true;
+        }
+      }, 1000);
+    }
     return {
       formData,
       rules,
       ruleFormRef,
-      submitForm
+      submitForm,
+      codeinfo,
+      changemsg
     };
   }
 });
@@ -93,6 +119,23 @@ export default defineComponent({
   span {
     margin: 0 5px;
     vertical-align: middle;
+  }
+}
+.phone-login {
+  position: relative;
+  .code {
+    position: absolute;
+    top: 53px;
+    right: 4px;
+    width: 60px;
+    height: 25px;
+    background-color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    span {
+      cursor: pointer;
+    }
   }
 }
 </style>

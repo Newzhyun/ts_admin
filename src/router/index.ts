@@ -1,4 +1,8 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import {
+  createRouter,
+  createWebHistory,
+  RouteRecordRaw
+} from 'vue-router';
 import layout from '@/views/layout.vue';
 const routes: RouteRecordRaw[] = [
   {
